@@ -1,0 +1,7 @@
+{% block body %}
+    <h1>Créer un nouveau commentaire</h1>
+    {{ include('commentaire/_form.html.twig') }}
+     {% for commentaire in commentaire %}
+ <a href="{{ path('app_evenement_show', {'ide': commentaire.evenementRelation.ide}) }}">Retour à la liste</a>
+  {% endfor %}
+{% endblock %}

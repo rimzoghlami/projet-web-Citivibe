@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <header id="header" class="header d-flex align-items-center sticky-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center">
+            <a href="{{ path('app_transports') }}" class="logo d-flex align-items-center me-auto">
+                <h1 class="">Mentor</h1>
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ path('app_transports') }}">Accueil</a></li>
+                    <li><a href="{{ path('app_about') }}">A propos</a></li>
+                    <li><a href="{{ path('app_courses') }}">Pages</a></li>
+                    <li><a href="{{ path('app_trainers') }}">Publications</a></li>
+                    <li><a href="{{ path('app_events') }}" class="active">Evenements</a></li>
+                    <li><a href="{{ path('app_pricing') }}">Transport</a></li>
+                    <li><a href="{{ path('app_contact') }}">Add</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
+            <a class="btn-getstarted" href="{{ path('app_courses') }}">Get Started</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Page Title -->
+        <div class="page-title" data-aos="fade">
+            <div class="heading">
+                <div class="container">
+                    <div class="row d-flex justify-content-center text-center">
+                        <div class="col-lg-8">
+                            <h1>Evenements</h1>
+                            <p class="mb-0">Découvrir nos événements </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="breadcrumbs">
+                <div class="container">
+                    <ol>
+                        <li><a href="{{ path('app_evenement_index') }}">Home</a></li>
+                        <li class="current">Evenements</li>
+                    </ol>
+                </div>
+            </nav>
+        </div><!-- End Page Title -->
+  <!-- Espacement -->
+    <div style="margin-bottom: 20px;"></div>
+        <!-- Events Section -->
+        <section id="events" class="events section">
+            <div class="container" data-aos="fade-up">
+                <div class="row">
+ {% for evenement in evenements %}
+    {% if loop.index % 2 == 1 %}
+        <div class="row">
+    {% endif %}
+    <div class="col-md-6">
+        <div class="card border-2" style="border-radius: 30px;">
+            <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">
+            <div class="card-body">
+                <h5 class="card-title">{{ evenement.nome }}</h5>
+                <p class="card-text"><b>Description: </b>{{ evenement.description }}</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item border-0"><b>Date:</b> {{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</li>
+                    <li class="list-group-item border-0"><b>Heure: </b>{{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</li>
+                    <li class="list-group-item border-0"><b>Catégorie:</b> {{ evenement.categoriee }}</li>
+                    <li class="list-group-item border-0"><b>Places disponibles:</b> {{ evenement.nbrplaces }}</li>
+                </ul>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <div>
+                    <a href="" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Réserver</a>
+                  
+                <a href="{{ path('app_user_show', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Voir plus</a>
+            </div>
+        </div>
+    </div>
+    {% if loop.index % 2 == 0 or loop.last %}
+        </div>
+    {% endif %}
+{% else %}
+    <p>Aucun événement disponible pour le moment.</p>
+{% endfor %}
+
+
+
+                </div>
+            </div>
+        </section><!-- /Events Section -->
+    </main>
+
+    <footer id="footer" class="footer position-relative">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <!-- Footer content -->
+            </div>
+        </div>
+
+        <!-- Footer credits -->
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ asset('assets/js/main.js') }}"></script>
+{% endblock %}

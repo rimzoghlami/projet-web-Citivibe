@@ -1,0 +1,42 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'autocomplete': 'off'}}) }}
+    <div class="mb-3">
+        {{ form_errors(form.nome) }}
+        {{ form_widget(form.nome, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.categoriee) }}
+        {{ form_widget(form.categoriee, {'attr': {'class': 'form-control', 'placeholder': 'Catégorie'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.date) }}
+        {{ form_widget(form.date, {'attr': {'class': 'form-control', 'placeholder': 'Date'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.heure) }}
+        {{ form_widget(form.heure, {'attr': {'class': 'form-control', 'placeholder': 'Heure'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.page) }}
+        {{ form_widget(form.page, {'attr': {'class': 'form-control', 'placeholder': 'page'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.nbrplaces) }}
+        {{ form_widget(form.nbrplaces, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de places'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Photo'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.latitude) }}
+        {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Latitude'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_errors(form.longitude) }}
+        {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Longitude'}}) }}
+    </div>
+    <button type="submit" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Ajouter</button>
+{{ form_end(form) }}

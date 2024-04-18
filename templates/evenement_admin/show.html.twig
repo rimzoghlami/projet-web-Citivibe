@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evenement{% endblock %}
+
+{% block body %}
+<header id="header" class="header d-flex align-items-center sticky-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center">
+            <a href="{{ path('app_transports') }}" class="logo d-flex align-items-center me-auto">
+                <h1 class="">Mentor</h1>
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ path('app_transports') }}">Accueil</a></li>
+                    <li><a href="{{ path('app_about') }}">A propos</a></li>
+                    <li><a href="{{ path('app_courses') }}">Pages</a></li>
+                    <li><a href="{{ path('app_trainers') }}">Publications</a></li>
+                    <li><a href="{{ path('app_events') }}" class="active">Evenements</a></li>
+                    <li><a href="{{ path('app_pricing') }}">Transport</a></li>
+                    <li><a href="{{ path('app_contact') }}">Add</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
+            <a class="btn-getstarted" href="{{ path('app_courses') }}">Get Started</a>
+        </div>
+    </header>
+<main class="main"> {# Ajout du bloc main #}
+    <div class="container">
+         <div class="card border-2" style="border-radius: 30px;">
+  <div class="card-body text-center">
+    <p class="card-text"><b>Page: {{ evenement.pageRelation.nom }}</b></p>
+    <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">  </div>
+  <div class="card-body">
+    <p class="card-text"><b>Nom:</b> {{ evenement.nome }}</p>
+    <p class="card-text"><b>Catégorie: </b>{{ evenement.categoriee }}</p>
+    <p class="card-text"><b>Date: </b>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</p>
+    <p class="card-text"><b>Heure:</b> {{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</p>
+    <p class="card-text"><b>Nombre de places: </b>{{ evenement.nbrplaces }}</p>
+    <p class="card-text"><b>Description:</b> {{ evenement.description }}</p>
+    {# Inclusion de la liste des commentaires ici #}
+    {% include 'commentaire/index.html.twig' %}
+    <a href="{{ path('app_commentaire_new', {'ide': evenement.ide}) }}">Créer un nouveau commentaire</a>
+
+  </div>
+ 
+<div class="card-footer d-flex justify-content-between" style="background-color: #f99d26; border-radius: 30px;">
+    <a href="{{ path('app_evenement_edit', {'ide': evenement.ide}) }}" class="btn" style="color: white;"><b>Modifier</b></a>
+    {{ include('evenement_admin/_delete_form.html.twig') }}
+    <a href="{{ path('app_events') }}" class="btn" style="color: white;"><b>Retour à la page</b></a>
+  </div>
+</div>
+
+</main> {# Fin du bloc main #}
+
+
+<footer id="footer" class="footer position-relative">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <!-- Footer content -->
+            </div>
+        </div>
+
+        <!-- Footer credits -->
+</footer>
+ <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ asset('assets/js/main.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commentaires{% endblock %}
+
+{% block body %}
+    <h1>Commentaires</h1>
+
+    {% if commentaires %}
+        {% if editing %}
+            <h2>Éditer un commentaire existant</h2>
+            {{ include('commentaire/_form.html.twig', { 'form': form }) }}
+        {% else %}
+            <h2>Créer un nouveau commentaire</h2>
+            {{ include('commentaire/_form.html.twig', { 'form': form }) }}
+        {% endif %}
+    {% endif %}
+
+    <!-- Affichage de la liste des commentaires -->
+    <h2>Liste des commentaires</h2>
+   <table class="table">
+    {% for commentaire in commentaires %}
+        <thead>
+            <tr>
+                
+                <th>{{ commentaire.usertRelation.nom }}  {{commentaire.usertRelation.prenom}} {{ commentaire.datecreation ? commentaire.datecreation|date('Y-m-d H:i:s') : '' }}</th>
+             <p class="card-text"></p>
+
+            </tr>
+        </thead>
+       <tbody>
+    {% if commentaire %}
+        <tr>
+            <td>
+                <div style="border-radius: 10px; border: 1px solid #ccc; padding: 10px;">
+                    {{ commentaire.contenu }}
+                </div>
+            </td>
+            <td>
+                <a href="{{ path('app_commentaire_show', {'idc': commentaire.idc}) }}">show</a>
+                            <a href="{{ path('app_commentaire_edit', {'idc': commentaire.idc, 'ide': commentaire.evenementRelation.ide}) }}">Éditer</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">Voulez-vous ajouter un nouveau commentaire ?</td>
+        </tr>
+    {% endif %}
+</tbody>
+
+    {% endfor %}
+    </table>
+
+{% endblock %}

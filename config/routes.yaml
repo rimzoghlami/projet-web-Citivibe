@@ -1,3 +1,51 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+app_transports_admin:
+    path: /default/admin
+    controller: App\Controller\EvenementController::indexA
+
+app_transports:
+    path: /default
+    controller: App\Controller\EvenementController::index
+
+app_courses:
+    path: /default/courses
+    controller: App\Controller\EvenementController::courses
+
+app_contact:
+    path: /default/contact
+    controller: App\Controller\EvenementController::contact
+
+app_trainers:
+    path: /default/trainers
+    controller: App\Controller\EvenementController::trainers
+
+app_about:
+    path: /default/about
+    controller: App\Controller\EvenementController::about
+
+app_events:
+    path: /default/events
+    controller: App\Controller\EvenementController::events
+
+app_pricing:
+    path: /default/pricing
+    controller: App\Controller\EvenementController::pricing
+
+app_course-details:
+    path: /default/details
+    controller: App\Controller\EvenementController::details
+
+app_evenement_new:
+    path: /evenement/new/{idp}
+    controller: App\Controller\EvenementController::new
+    methods: [GET, POST]
+
+
+app_evenement_index:
+    path: /default/evenement
+    controller: App\Controller\EvenementController::indexE
+    methods: [GET]
+
+app_evenement_show:
+    path: /evenement/{ide}
+    controller: App\Controller\EvenementController::show
+    methods: [GET]
