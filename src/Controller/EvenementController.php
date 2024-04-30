@@ -69,72 +69,72 @@ class EvenementController extends AbstractController
 
 //******************************* Partie Admin ************************************************//
 
-#[Route('/default/events', name: 'app_events')]
-public function events(Request $request, EvenementRepository $evenementRepository): Response
-{
+  #[Route('/default/events', name: 'app_events')]
+ public function events(Request $request, EvenementRepository $evenementRepository): Response
+ {
     $searchTerm = $request->query->get('q');
     $category = $request->query->get('categoriee');
+    $order = $request->query->get('order');
 
-    // Utiliser la méthode de tri par nom si aucun terme de recherche ni catégorie n'est spécifié
-    if (!$searchTerm && !$category) {
-        $evenements = $evenementRepository->trierParNom();
-    } else {
-        // Rechercher les événements par nom s'il y a un terme de recherche
-        if ($searchTerm) {
-            $evenements = $evenementRepository->searchByNom($searchTerm);
-        } else {
-            $evenements = $evenementRepository->searchByNom('');
-        }
-
-        // Si une catégorie est spécifiée, filtrer les événements par cette catégorie
-        if ($category) {
-            // Vérifier si la catégorie existe
-            if (!$evenementRepository->categoryExists($category)) {
-                $this->addFlash('warning', 'Cette catégorie n\'existe pas.');
-                return $this->redirectToRoute('app_events');
-            }
-    
-            $evenements = $evenementRepository->findByCategoriepAndNomContains($category, $searchTerm);
-        }
-    
-        // Si aucune page n'est trouvée, rediriger avec un message
-        if (empty($evenements)) {
-            $this->addFlash('warning', 'Aucune page trouvée pour cette catégorie.');
-            return $this->redirectToRoute('app_events');
-        }
-    }
 
     // Récupérer les événements non expirés
     $evenementsNonExpire = $evenementRepository->findNonExpiredEvents();
 
+    // Filtrer les événements non expirés par catégorie si spécifiée
+    if ($category) {
+        // Vérifier si la catégorie existe
+        if (!$evenementRepository->categoryExists($category)) {
+            $this->addFlash('warning', 'Cette catégorie n\'existe pas.');
+            return $this->redirectToRoute('app_events');
+        }
+
+        $evenementsNonExpire = $evenementRepository->findByCategoriepAndNomContains($category, $searchTerm);
+    }
+    if ($order) {
+        $evenementsNonExpire = $evenementRepository->trierParNom($order);
+    }
+
+    // Si aucun terme de recherche n'est spécifié, afficher tous les événements non expirés
+    if (!$searchTerm) {
+        return $this->render('default/evenement.html.twig', [
+            'evenements' => $evenementsNonExpire,
+        ]);
+    }
+
+    // Rechercher les événements non expirés par nom si un terme de recherche est spécifié
+    $evenementsNonExpire = $evenementRepository->searchByNom($searchTerm);
+    
+    
     return $this->render('default/evenement.html.twig', [
-        'evenements' => $evenementsNonExpire, // Passer les événements non expirés au template
+        'evenements' => $evenementsNonExpire,
     ]);
-}
+  }
 
-#[Route('/evenements/historique', name: 'app_evenement_history')]
-public function eventHistory(Request $request, EvenementRepository $evenementRepository): Response
-{
-    // Récupérez les événements expirés
-    $evenementsExpire = $evenementRepository->findExpiredEvents();
 
-    return $this->render('evenement_admin/evenement_history.html.twig', [
+
+     #[Route('/evenements/historique', name: 'app_evenement_history')]
+     public function eventHistory(Request $request, EvenementRepository $evenementRepository): Response
+     {
+      // Récupérez les événements expirés
+     $evenementsExpire = $evenementRepository->findExpiredEvents();
+
+     return $this->render('evenement_admin/evenement_history.html.twig', [
         'evenementsExpire' => $evenementsExpire,
-    ]);
-}
+      ]);
+      }
 
 
-   // #[Route('/evenement', name: 'app_evenement_idex', methods: ['GET'])]
-   // public function indexE(EvenementRepository $evenementRepository): Response
-   //{
-   //   return $this->render('evenement/index.html.twig', [
-   //        'evenements' => $evenementRepository->findAll(),
-   //    ]);
-   //}
+     // #[Route('/evenement', name: 'app_evenement_idex', methods: ['GET'])]
+     // public function indexE(EvenementRepository $evenementRepository): Response
+     //{
+     //   return $this->render('evenement/index.html.twig', [
+     //        'evenements' => $evenementRepository->findAll(),
+     //    ]);
+     //}
    
-   #[Route('/evenement/new/{idp}', name: 'app_evenement_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, $idp): Response
-{
+     #[Route('/evenement/new/{idp}', name: 'app_evenement_new', methods: ['GET', 'POST'])]
+     public function new(Request $request, EntityManagerInterface $entityManager, $idp): Response
+     {
         // Création d'une nouvelle instance d'Evenement
         $evenement = new Evenement();
         // Création du formulaire
@@ -188,7 +188,8 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
              // Persistance de l'événement dans la base de données
             $entityManager->persist($evenement);
             $entityManager->flush();
-    
+            $this->addFlash('success', 'Votre evenement est ajouter avec succees
+            .');
             // Redirection vers la liste des événements après la création
             return $this->redirectToRoute('app_events', [], Response::HTTP_SEE_OTHER);
         }
@@ -198,11 +199,11 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
             'evenement' => $evenement,
             'form' => $form,
         ]);
-    }
+     }
     
-    #[Route('/evenement/{ide}', name: 'app_evenement_show', methods: ['GET'])]
-    public function show(Evenement $evenement, EvenementRepository $evenementRepository, CommentaireRepository $commentaireRepository): Response
-    {
+     #[Route('/evenement/{ide}', name: 'app_evenement_show', methods: ['GET'])]
+     public function show(Evenement $evenement, EvenementRepository $evenementRepository, CommentaireRepository $commentaireRepository): Response
+     {
         // Récupérer les commentaires associés à l'événement en utilisant le CommentaireRepository
         $commentaires = $commentaireRepository->findBy(['evenementRelation' => $evenement]);
         
@@ -210,16 +211,16 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
             'evenement' => $evenement,
             'commentaires' => $commentaires, // Passer les commentaires au modèle Twig
         ]);
-    }
+     }
 
 
     
     
     
 
-    #[Route('/evenement/{ide}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
-    {
+     #[Route('/evenement/{ide}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
+     public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
+     {
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
 
@@ -267,6 +268,12 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
         return $this->redirectToRoute('app_events', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/evenement/map', name: 'app_evenement_map')]
+    public function mapaction ():Response {
+        return $this->render('evenement_admin/MAP.html.twig', []);
+    }
+
+
 //*********************************** Partie Super Admin **********************************************//
 
     #[Route('/evenement/admin', name: 'app_evenement_admin')]
@@ -282,7 +289,54 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
         ]);
     }
 
+    #[Route('/Calender_admin', name: 'app_evenement_admin_calender', methods: ['GET'])]
+    public function calender(EvenementRepository $evenementRepository): Response
+    {
+        $evenement = $evenementRepository->findAll();
+    
+        $events = [];
+        foreach ($evenement as $evenement) {
+            // Format the Defis data into an event
+            $event = [
+                'title' => $evenement->getNome(),
+                
+                'Date' => $evenement->getDate(),
+                'start' => $evenement->getDate()->format('Y-m-d'), 
+                
+            ];
+            $events[] = $event;
+        }
+    
+        return $this->render('evenement_Super_admin/calender.html.twig', [
+            'events' => json_encode($events), // Pass events as JSON to the template
+        ]);
+    }
+
+    #[Route('/Stat_admin', name: 'app_evenement_admin_stat', methods: ['GET'])]
+    public function statistiques(EvenementRepository $evenementRepository): Response
+    {
+        // Récupérer le nombre d'événements par catégorie
+        $eventCounts = $evenementRepository->getEventCountsPerCategory();
         
+        // Séparer les identifiants de catégorie et les nombres d'événements dans des tableaux séparés
+        $categoryIds = [];
+        $eventCountsArray = [];
+        foreach ($eventCounts as $count) {
+            $categoryIds[] = $count['categoryId']; // Supposant que 'categoryId' est le nom de la colonne
+            $eventCountsArray[] = $count['eventCount']; // Supposant que 'eventCount' est le nom de la colonne
+        }
+        
+        // Préparer les données pour le rendu
+        $categoryData = [
+            'categoryIds' => json_encode($categoryIds),
+            'eventCounts' => json_encode($eventCountsArray),
+        ];
+        
+        // Rendre le modèle avec les données de statistiques par catégorie
+        return $this->render('evenement_Super_admin/stats.html.twig', $categoryData);
+    }
+    
+      
     #[Route('/evenement/admin/new/{idp}', name: 'app_evenement_new_admin', methods: ['GET', 'POST'])]
     public function newadmin(Request $request, EntityManagerInterface $entityManager,$idp): Response
     {

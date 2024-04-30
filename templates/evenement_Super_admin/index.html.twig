@@ -71,19 +71,33 @@
     <div class="main-panel" id="main-panel">
  <!-- Espacement -->
     <div style="margin-bottom: 20px;"></div>
-
-    <!-- Partie 2 : Button d'ajout -->
-    <div class="container" style="margin-bottom: 20px;">
-        <div class="text-center">
-                <a href="{{ path('app_evenement_new_admin', {'idp':evenements[0].pageRelation.idp}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Créer un nouvel événement</a>
+<div class="container" style="margin-bottom: 20px;">
+     <!-- Contenu principal -->
+      <div class="content">
+        <!-- Boutons pour créer un nouvel événement, voir le calendrier et les statistiques -->
+        <div class="container" style="margin-bottom: 20px;">
+          <div class="row justify-content-center">
+            <!-- Bouton pour créer un nouvel événement -->
+            <div class="col-md-4 text-center">
+              <a href="{{ path('app_evenement_new_admin', {'idp':evenements[0].pageRelation.idp}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Créer un nouvel événement</a>
+            </div>
+            <!-- Bouton pour accéder au calendrier -->
+            <div class="col-md-4 text-center">
+              <a href="{{ path('app_evenement_admin_calender') }}" class="btn btn-primary" style="border-radius: 30px;">Voir le calendrier</a>
+            </div>
+            <!-- Bouton pour accéder aux statistiques -->
+            <div class="col-md-4 text-center">
+              <a href="{{ path('app_evenement_admin_stat') }}" class="btn btn-primary" style="border-radius: 30px;">Voir les statistiques</a>
+            </div>
+          </div>
         </div>
-    </div>
-
-    <!-- Espacement -->
-    <div style="margin-bottom: 40px;"></div>
+        <!-- Espacement -->
+        <div style="margin-bottom: 40px;"></div>
+        <!-- Affichage des événements -->
 <div class="content">
     <div class="row">
         {% for evenement in evenements %}
+        
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">

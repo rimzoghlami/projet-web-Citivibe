@@ -57,10 +57,20 @@
                 </div>
             </nav>
         </div><!-- End Page Title -->
-
-    
 <div class="container-fluid container-xl position-relative d-flex align-items-center">
-    <!-- ... -->
+    <!-- Boutons de tri par nom -->
+    <div>
+        <!-- Lien de tri ascendant par nom -->
+        <a href="{{ path('app_events', {'sortBy': 'nome', 'order': 'asc'}) }}" style="margin-left: 50px;">
+            <img src="{{ asset('assets/img/des.png') }}" alt="" width="30">
+        </a>
+        <!-- Lien de tri descendant par nom -->
+        <a href="{{ path('app_events', {'sortBy': 'nome', 'order': 'desc'}) }}">
+            <img src="{{ asset('assets/img/asc.png') }}" alt="" width="30">
+        </a>
+    </div>
+
+    <!-- Bouton de tri par catégorie -->
     <nav id="navmenu" class="navmenu" style="margin-left: auto;">
         <ul>
             <!-- Autres liens de navigation -->
@@ -69,14 +79,13 @@
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
 </div>
-        <!-- Bouton de tri par catégorie -->
-        <div>
-            <a href="{{ path('app_events', {'sortBy': 'nom'}) }}">Trier par nom </a>
-        </div>
+
+<!-- Formulaire de filtrage par catégorie -->
 <div class="container" data-aos="fade-up" data-aos-delay="100">
     <form action="" method="get">
         <label for="category">Catégorie :</label>
-<select id="category" name="categoriee" style="border-radius: 30px; width: 200px;">            <option value="">Toutes les catégories</option>
+        <select id="category" name="categoriee" style="border-radius: 30px; width: 200px;">
+            <option value="">Toutes les catégories</option>
             <option value="Sport">Sport</option>
             <option value="Education">Education</option>
             <option value="Loisir">Loisir</option>
@@ -84,15 +93,13 @@
             <option value="Environnement">Environnement</option>
             <option value="Art">Art</option>
             <option value="Santé">Santé</option>
-
         </select>
-        <button type="submit"  style="background-color: #f99d26;border-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Filtrer</button>
+        <button type="submit" style="background-color: #f99d26; border-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Filtrer</button>
     </form>
-    </div>
-    </br>
-        <!-- Espacement -->
-        <div style="margin-bottom: 20px;"></div>
+</div>
 
+        <!-- Espacement -->
+       
         <!-- Partie 2 : Button d'ajout -->
         <div class="container" style="margin-bottom: 20px;">
             <div class="text-center">

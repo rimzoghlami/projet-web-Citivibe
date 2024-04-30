@@ -5,7 +5,8 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
-
+import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.js';
 (function() {
   "use strict";
 

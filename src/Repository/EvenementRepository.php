@@ -114,27 +114,42 @@ public function searchByNom($searchTerm)
         ->getQuery()
         ->getResult();
 }
-public function trierParNom(): array
+public function trierParCategorie(): array
 {
     return $this->createQueryBuilder('e')
-        ->orderBy('e.nome', 'DESC') // ou 'DESC' si vous voulez trier en ordre décroissant
+        ->orderBy('e.categoriee', 'ASC') // ou 'DESC' si vous voulez trier en ordre décroissant
         ->getQuery()
         ->getResult();
 }
-public function findByCategoriepAndNomContains(string $categoriee, string $nome): array
+public function findByCategoriepAndNomContains(string $categoriee, ?string $nome): array
 {
     $qb = $this->createQueryBuilder('p')
         ->andWhere('p.categoriee = :categoriee')
         ->setParameter('categoriee', $categoriee);
+
+    // Filtrer uniquement sur les événements non expirés
+    $now = new \DateTime();
+    $qb->andWhere('p.date >= :now')
+        ->setParameter('now', $now);
 
     if (!empty($nome)) {
         $qb->andWhere('p.nome LIKE :nome')
             ->setParameter('nome', '%'.$nome.'%');
     }
 
-    return $qb->getQuery()
-        ->getResult();
+    return $qb->getQuery()->getResult();
 }
+public function trierParNom($order = 'ASC'): array
+{
+    $queryBuilder = $this->createQueryBuilder('p');
+    $queryBuilder
+        ->andWhere('p.date >= :now')
+        ->setParameter('now', new \DateTime());
+
+    $queryBuilder->orderBy('p.nome', $order);
+    return $queryBuilder->getQuery()->getResult();
+}
+
 public function categoryExists($category)
     {
         $entityManager = $this->getEntityManager();
@@ -152,4 +167,13 @@ public function categoryExists($category)
         // Si des résultats sont trouvés, la catégorie existe
         return !empty($result);
     }
+    public function getEventCountsPerCategory(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e.categoriee AS categoryId, COUNT(e) AS eventCount')
+            ->groupBy('e.categoriee')
+            ->getQuery()
+            ->getResult();
+    }
+    
 }
