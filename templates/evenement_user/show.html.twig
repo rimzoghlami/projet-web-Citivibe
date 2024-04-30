@@ -39,8 +39,8 @@
     <p class="card-text"><b>Nombre de places: </b>{{ evenement.nbrplaces }}</p>
     <p class="card-text"><b>Description:</b> {{ evenement.description }}</p>
     {# Inclusion de la liste des commentaires ici #}
-    {% include 'commentaire/index.html.twig' %}
-    <a href="{{ path('app_commentaire_new', {'ide': evenement.ide}) }}">Créer un nouveau commentaire</a>
+    {% include 'commentaire_user/index.html.twig' %}
+    <a href="{{ path('app_commentaire_new_user', {'ide': evenement.ide}) }}">Créer un nouveau commentaire</a>
 
   </div>
  

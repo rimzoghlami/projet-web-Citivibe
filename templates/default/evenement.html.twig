@@ -1,30 +1,41 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <header id="header" class="header d-flex align-items-center sticky-top">
-        <div class="container-fluid container-xl position-relative d-flex align-items-center">
-            <a href="{{ path('app_transports') }}" class="logo d-flex align-items-center me-auto">
-                <h1 class="">Mentor</h1>
-            </a>
+ <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+        <a href="{{ path('app_transports') }}" class="logo d-flex align-items-center me-auto">
+            <h1 class="">Cityvibe</h1>
+        </a>
+        <!-- Bouton de recherche -->
+        <form action="{{ path('app_events') }}" method="GET" class="search-form" style="margin-left: 20px;">
+            <div class="input-group">
+<input type="text" name="q" class="form-control" placeholder="Rechercher..." style="border-radius: 30px; width: 200px;">
+                <div class="input-group-append">
+<button type="submit" class="btn btn-orange" style="background-color: transparent; color: #F99D45; border-radius: 30px; margin-left: 10px; "> <!-- Fond transparent -->
+    <img src="{{ asset('assets/img/icons8-search-48.png') }}" alt="Rechercher" style="height: 20px; width: 20px; margin-right: 5px;"> <!-- Image de recherche -->
+</button>
 
-            <nav id="navmenu" class="navmenu">
-                <ul>
-                    <li><a href="{{ path('app_transports') }}">Accueil</a></li>
-                    <li><a href="{{ path('app_about') }}">A propos</a></li>
-                    <li><a href="{{ path('app_courses') }}">Pages</a></li>
-                    <li><a href="{{ path('app_trainers') }}">Publications</a></li>
-                    <li><a href="{{ path('app_events') }}" class="active">Evenements</a></li>
-                    <li><a href="{{ path('app_pricing') }}">Transport</a></li>
-                    <li><a href="{{ path('app_contact') }}">Add</a></li>
-                </ul>
-                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-            </nav>
+                </div>
+            </div>
+        </form>
+        <nav id="navmenu" class="navmenu" style="margin-left: auto;">
+            <ul>
+                <li><a href="{{ path('app_transports') }}">Accueil</a></li>
+                <li><a href="{{ path('app_about') }}">A propos</a></li>
+                <li><a href="{{ path('app_courses') }}">Pages</a></li>
+                <li><a href="{{ path('app_trainers') }}">Publications</a></li>
+                <li><a href="{{ path('app_events') }}" class="active">Evenements</a></li>
+                <li><a href="{{ path('app_pricing') }}">Transport</a></li>
+                <li><a href="{{ path('app_contact') }}">Add</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+       <!-- <a class="btn-getstarted" href="{{ path('app_courses') }}">Get Started</a>-->
+    </div>
+</header>
 
-            <a class="btn-getstarted" href="{{ path('app_courses') }}">Get Started</a>
-        </div>
-    </header>
 
-    <main class="main">
+     <main class="main">
         <!-- Page Title -->
         <div class="page-title" data-aos="fade">
             <div class="heading">
@@ -46,61 +57,100 @@
                 </div>
             </nav>
         </div><!-- End Page Title -->
-  <!-- Espacement -->
-    <div style="margin-bottom: 20px;"></div>
 
-  <!-- Partie 2 : Button d'ajout -->
+    
+<div class="container-fluid container-xl position-relative d-flex align-items-center">
+    <!-- ... -->
+    <nav id="navmenu" class="navmenu" style="margin-left: auto;">
+        <ul>
+            <!-- Autres liens de navigation -->
+            <li><a href="{{ path('app_evenement_history') }}">Historique</a></li> <!-- Ajoutez ce lien -->
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+</div>
+        <!-- Bouton de tri par catégorie -->
+        <div>
+            <a href="{{ path('app_events', {'sortBy': 'nom'}) }}">Trier par nom </a>
+        </div>
+<div class="container" data-aos="fade-up" data-aos-delay="100">
+    <form action="" method="get">
+        <label for="category">Catégorie :</label>
+<select id="category" name="categoriee" style="border-radius: 30px; width: 200px;">            <option value="">Toutes les catégories</option>
+            <option value="Sport">Sport</option>
+            <option value="Education">Education</option>
+            <option value="Loisir">Loisir</option>
+            <option value="Communauté">Communauté</option>
+            <option value="Environnement">Environnement</option>
+            <option value="Art">Art</option>
+            <option value="Santé">Santé</option>
+
+        </select>
+        <button type="submit"  style="background-color: #f99d26;border-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Filtrer</button>
+    </form>
+    </div>
+    </br>
+        <!-- Espacement -->
+        <div style="margin-bottom: 20px;"></div>
+
+        <!-- Partie 2 : Button d'ajout -->
         <div class="container" style="margin-bottom: 20px;">
             <div class="text-center">
-                <a href="{{ path('app_evenement_new', {'idp':evenements[0].pageRelation.idp}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Créer un nouvel événement</a>
+{% if evenements is not empty %}
+    <a href="{{ path('app_evenement_new', {'idp':evenements[0].pageRelation.idp}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; color: white; display: inline-block;">Créer un nouvel événement</a>
+{% else %}
+    <p>Aucun événement disponible pour le moment.</p>
+{% endif %}
             </div>
         </div>
 
-    <!-- Espacement -->
-    <div style="margin-bottom: 20px;"></div>
-        <!-- Events Section -->
+        <!-- Espacement -->
+        <div style="margin-bottom: 20px;"></div>
+
+        <!-- Section pour afficher les événements -->
         <section id="events" class="events section">
             <div class="container" data-aos="fade-up">
                 <div class="row">
- {% for evenement in evenements %}
-    {% if loop.index % 2 == 1 %}
-        <div class="row">
-    {% endif %}
-    <div class="col-md-6">
-        <div class="card border-2" style="border-radius: 30px;">
-            <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">
-            <div class="card-body">
-                <h5 class="card-title">{{ evenement.nome }}</h5>
-                <p class="card-text">Page: {{ evenement.pageRelation.nom }}</p>
-                <p class="card-text"><b>Description: </b>{{ evenement.description }}</p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item border-0"><b>Date:</b> {{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</li>
-                    <li class="list-group-item border-0"><b>Heure: </b>{{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</li>
-                    <li class="list-group-item border-0"><b>Catégorie:</b> {{ evenement.categoriee }}</li>
-                    <li class="list-group-item border-0"><b>Places disponibles:</b> {{ evenement.nbrplaces }}</li>
-                </ul>
-            </div>
-            <div class="card-footer d-flex justify-content-between">
-                <div>
-                    <a href="{{ path('app_evenement_edit', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Éditer</a>
-                    <a href="{{ path('app_evenement_delete', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Supprimer</a>
+                    {% for evenement in evenements %}
+                        {% if loop.index % 2 == 1 %}
+                            <div class="row">
+                        {% endif %}
+                        <div class="col-md-6">
+                            <div class="card border-2" style="border-radius: 30px;">
+                                <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ evenement.nome }}</h5>
+                                    <p class="card-text">Page: {{ evenement.pageRelation.nom }}</p>
+                                    <p class="card-text"><b>Description: </b>{{ evenement.description }}</p>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item border-0"><b>Date:</b> {{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</li>
+                                        <li class="list-group-item border-0"><b>Heure: </b>{{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</li>
+                                        <li class="list-group-item border-0"><b>Catégorie:</b> {{ evenement.categoriee }}</li>
+                                        <li class="list-group-item border-0"><b>Places disponibles:</b> {{ evenement.nbrplaces }}</li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between">
+                                    <div>
+                                        {{ include('evenement_admin/_delete_form.html.twig') }}
+                                    </div>
+                                    <div>
+                                        <a href="{{ path('app_evenement_edit', {'ide': evenement.ide}) }}" class="btn" style="background-color: transparant; border-radius: 30px; color: gray;">Éditer</a>
+                                    </div>
+                                    <a href="{{ path('app_evenement_show', {'ide': evenement.ide}) }}" class="btn" style="background-color: transparant; border-radius: 30px; color: gray;">Voir plus ...</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% if loop.index % 2 == 0 or loop.last %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p>Aucun événement disponible pour le moment.</p>
+                    {% endfor %}
                 </div>
-                <a href="{{ path('app_evenement_show', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Voir plus</a>
             </div>
-        </div>
-    </div>
-    {% if loop.index % 2 == 0 or loop.last %}
-        </div>
-    {% endif %}
-{% else %}
-    <p>Aucun événement disponible pour le moment.</p>
-{% endfor %}
+        </section><!-- /Section pour afficher les événements -->
 
-
-
-                </div>
-            </div>
-        </section><!-- /Events Section -->
+      
     </main>
 
     <footer id="footer" class="footer position-relative">
@@ -129,4 +179,52 @@
 
     <!-- Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionnez tous les boutons "J'aime"
+            var likeButtons = document.querySelectorAll('.like-button');
+
+            // Boucle à travers chaque bouton "J'aime"
+            likeButtons.forEach(function(button) {
+                // Ajoutez un écouteur d'événements au clic sur le bouton "J'aime"
+                button.addEventListener('click', function(event) {
+                    // Empêchez le comportement par défaut du bouton (rechargement de la page)
+                    event.preventDefault();
+
+                    // Récupérez l'ID de l'événement à partir de l'attribut data-event-id
+                    var eventId = button.getAttribute('data-event-id');
+
+                    // Effectuez une requête AJAX pour indiquer que l'utilisateur aime cet événement
+                    // Vous devrez implémenter cette fonctionnalité côté serveur
+                    // Par exemple, vous pourriez utiliser fetch() ou XMLHttpRequest pour envoyer la requête
+
+                    // Exemple avec fetch :
+                    fetch('/like-event/' + eventId, {
+                        method: 'POST', // Méthode POST pour envoyer des données au serveur
+                        headers: {
+                            'Content-Type': 'application/json', // Type de contenu JSON
+                        },
+                        // Corps de la requête, si nécessaire
+                        body: JSON.stringify({
+                            eventId: eventId,
+                        }),
+                    })
+                    .then(function(response) {
+                        // Traitez la réponse de la requête
+                        if (response.ok) {
+                            // La requête s'est bien déroulée
+                            console.log('L\'événement a été aimé avec succès !');
+                        } else {
+                            // La requête a échoué
+                            console.error('Une erreur est survenue lors de la tentative d\'aimer l\'événement.');
+                        }
+                    })
+                    .catch(function(error) {
+                        // Gérez les erreurs de la requête
+                        console.error('Une erreur est survenue lors de la tentative d\'aimer l\'événement :', error);
+                    });
+                });
+            });
+        });
+    </script>
 {% endblock %}

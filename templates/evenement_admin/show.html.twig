@@ -43,14 +43,11 @@
     <a href="{{ path('app_commentaire_new', {'ide': evenement.ide}) }}">Créer un nouveau commentaire</a>
 
   </div>
- 
-<div class="card-footer d-flex justify-content-between" style="background-color: #f99d26; border-radius: 30px;">
-    <a href="{{ path('app_evenement_edit', {'ide': evenement.ide}) }}" class="btn" style="color: white;"><b>Modifier</b></a>
-    {{ include('evenement_admin/_delete_form.html.twig') }}
-    <a href="{{ path('app_events') }}" class="btn" style="color: white;"><b>Retour à la page</b></a>
-  </div>
-</div>
 
+</div>
+<div>
+    <a href="{{ path('app_events') }}" class="btn" style="color: #f99d26;"><b>Retour à la page</b></a>
+  </div>
 </main> {# Fin du bloc main #}
 
 

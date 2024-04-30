@@ -4,7 +4,7 @@
     <header id="header" class="header d-flex align-items-center sticky-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
             <a href="{{ path('app_transports') }}" class="logo d-flex align-items-center me-auto">
-                <h1 class="">Mentor</h1>
+                <h1 class="">CitYvibe</h1>
             </a>
 
             <nav id="navmenu" class="navmenu">
@@ -23,73 +23,72 @@
             <a class="btn-getstarted" href="{{ path('app_courses') }}">Get Started</a>
         </div>
     </header>
-
-    <main class="main">
-        <!-- Page Title -->
-        <div class="page-title" data-aos="fade">
-            <div class="heading">
-                <div class="container">
-                    <div class="row d-flex justify-content-center text-center">
-                        <div class="col-lg-8">
-                            <h1>Evenements</h1>
-                            <p class="mb-0">Découvrir nos événements </p>
-                        </div>
+<main class="main">
+    <!-- Titre de la page -->
+    <div class="page-title" data-aos="fade">
+        <div class="heading">
+            <div class="container">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <h1>Evenements</h1>
+                        <p class="mb-0">Découvrir nos événements </p>
                     </div>
                 </div>
             </div>
-            <nav class="breadcrumbs">
-                <div class="container">
-                    <ol>
-                        <li><a href="{{ path('app_evenement_index') }}">Home</a></li>
-                        <li class="current">Evenements</li>
-                    </ol>
-                </div>
-            </nav>
-        </div><!-- End Page Title -->
-  <!-- Espacement -->
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="{{ path('app_evenement_index') }}">Accueil</a></li>
+                    <li class="current">Evenements</li>
+                </ol>
+            </div>
+        </nav>
+    </div><!-- Fin du titre de la page -->
+
+    <!-- Espacement -->
     <div style="margin-bottom: 20px;"></div>
-        <!-- Events Section -->
-        <section id="events" class="events section">
-            <div class="container" data-aos="fade-up">
-                <div class="row">
- {% for evenement in evenements %}
-    {% if loop.index % 2 == 1 %}
-        <div class="row">
-    {% endif %}
-    <div class="col-md-6">
-        <div class="card border-2" style="border-radius: 30px;">
-            <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">
-            <div class="card-body">
-                <h5 class="card-title">{{ evenement.nome }}</h5>
-                <p class="card-text"><b>Description: </b>{{ evenement.description }}</p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item border-0"><b>Date:</b> {{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</li>
-                    <li class="list-group-item border-0"><b>Heure: </b>{{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</li>
-                    <li class="list-group-item border-0"><b>Catégorie:</b> {{ evenement.categoriee }}</li>
-                    <li class="list-group-item border-0"><b>Places disponibles:</b> {{ evenement.nbrplaces }}</li>
-                </ul>
-            </div>
-            <div class="card-footer d-flex justify-content-between">
-                <div>
-                    <a href="" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Réserver</a>
-                  
-                <a href="{{ path('app_user_show', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Voir plus</a>
-            </div>
-        </div>
-    </div>
-    {% if loop.index % 2 == 0 or loop.last %}
-        </div>
-    {% endif %}
-{% else %}
-    <p>Aucun événement disponible pour le moment.</p>
-{% endfor %}
 
-
-
+    <!-- Section des événements -->
+    <section id="events" class="events section">
+        <div class="container" data-aos="fade-up">
+            {% for evenement in evenements %}
+                {% if loop.index % 2 == 1 %}
+                    <div class="row">
+                {% endif %}
+                
+                <div class="col-md-6">
+                    <div class="card border-2" style="border-radius: 30px;">
+                        <img src="{{ asset(evenement.photo) }}" class="card-img-top img-fluid" alt="..." style="height: 200px; object-fit: cover; border-radius: 30px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ evenement.nome }}</h5>
+                            <p class="card-text"><b>Description: </b>{{ evenement.description }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item border-0"><b>Date:</b> {{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</li>
+                                <li class="list-group-item border-0"><b>Heure: </b>{{ evenement.heure ? evenement.heure|date('H:i:s') : '' }}</li>
+                                <li class="list-group-item border-0"><b>Catégorie:</b> {{ evenement.categoriee }}</li>
+                                <li class="list-group-item border-0"><b>Places disponibles:</b> {{ evenement.nbrplaces }}</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div>
+                                <a href="" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Réserver</a>
+                                <a href="{{ path('app_user_show', {'ide': evenement.ide}) }}" class="btn" style="background-color: #f99d26; border-radius: 30px; border: 2px solid white; color: white;">Voir plus</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section><!-- /Events Section -->
-    </main>
+                
+                {% if loop.index % 2 == 0 or loop.last %}
+                    </div><!-- Fermeture de la rangée -->
+                {% endif %}
+            {% else %}
+                <p>Aucun événement disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </section><!-- /Section des événements -->
+</main>
+
 
     <footer id="footer" class="footer position-relative">
         <div class="container footer-top">

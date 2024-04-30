@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormError;
+
 
 class EvenementController extends AbstractController
 {
@@ -67,13 +69,60 @@ class EvenementController extends AbstractController
 
 //******************************* Partie Admin ************************************************//
 
-    #[Route('/default/events', name: 'app_events')]
-    public function events(EvenementRepository $evenementRepository): Response
-    {
-        return $this->render('default/evenement.html.twig', [
-            'evenements' => $evenementRepository->findAll(),
-        ]);
+#[Route('/default/events', name: 'app_events')]
+public function events(Request $request, EvenementRepository $evenementRepository): Response
+{
+    $searchTerm = $request->query->get('q');
+    $category = $request->query->get('categoriee');
+
+    // Utiliser la méthode de tri par nom si aucun terme de recherche ni catégorie n'est spécifié
+    if (!$searchTerm && !$category) {
+        $evenements = $evenementRepository->trierParNom();
+    } else {
+        // Rechercher les événements par nom s'il y a un terme de recherche
+        if ($searchTerm) {
+            $evenements = $evenementRepository->searchByNom($searchTerm);
+        } else {
+            $evenements = $evenementRepository->searchByNom('');
+        }
+
+        // Si une catégorie est spécifiée, filtrer les événements par cette catégorie
+        if ($category) {
+            // Vérifier si la catégorie existe
+            if (!$evenementRepository->categoryExists($category)) {
+                $this->addFlash('warning', 'Cette catégorie n\'existe pas.');
+                return $this->redirectToRoute('app_events');
+            }
+    
+            $evenements = $evenementRepository->findByCategoriepAndNomContains($category, $searchTerm);
+        }
+    
+        // Si aucune page n'est trouvée, rediriger avec un message
+        if (empty($evenements)) {
+            $this->addFlash('warning', 'Aucune page trouvée pour cette catégorie.');
+            return $this->redirectToRoute('app_events');
+        }
     }
+
+    // Récupérer les événements non expirés
+    $evenementsNonExpire = $evenementRepository->findNonExpiredEvents();
+
+    return $this->render('default/evenement.html.twig', [
+        'evenements' => $evenementsNonExpire, // Passer les événements non expirés au template
+    ]);
+}
+
+#[Route('/evenements/historique', name: 'app_evenement_history')]
+public function eventHistory(Request $request, EvenementRepository $evenementRepository): Response
+{
+    // Récupérez les événements expirés
+    $evenementsExpire = $evenementRepository->findExpiredEvents();
+
+    return $this->render('evenement_admin/evenement_history.html.twig', [
+        'evenementsExpire' => $evenementsExpire,
+    ]);
+}
+
 
    // #[Route('/evenement', name: 'app_evenement_idex', methods: ['GET'])]
    // public function indexE(EvenementRepository $evenementRepository): Response
@@ -96,6 +145,18 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
     
         // Vérification de la soumission et de la validité du formulaire
         if ($form->isSubmitted() && $form->isValid()) {
+                // Check if the challenge date is expired
+                $now = new \DateTime();
+
+                // Vérifier si la date du défi est passée
+                if ($evenement->getDate() < $now || ($evenement->getDate() == $now && $evenement->getHeure() < $now->format('H:i'))) {
+                    $form->get('date')->addError(new FormError('La date de levenement est déjà passée.'));
+                    $form->get('heure')->addError(new FormError('L\'heure de levenement est déjà passée.'));
+                    return $this->renderForm('evenement_admin/new.html.twig', [
+                        'evenement' => $evenement,
+                        'form' => $form,
+                    ]);
+                }
             // Traitement de l'envoi du formulaire
     
             $photo = $form->get('photo')->getData();
@@ -173,7 +234,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
                 try {
                     $photo->move(
                         $this->getParameter('images_directory'),
-                        $newFilename
+                     $newFilename
                     );
                 } catch (FileException $e) {
                     // Handle file upload exception
@@ -279,18 +340,15 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
     
 
     #[Route('/evenement/admin/{ide}', name: 'app_evenement_show_admin', methods: ['GET'])]
-    public function showadmin(Evenement $evenement, EvenementRepository $evenementRepository): Response
+    public function showadmi(Evenement $evenement, EvenementRepository $evenementRepository, CommentaireRepository $commentaireRepository): Response
     {
-        // Vérifier si l'événement existe dans la base de données
-        $existingEvenement = $evenementRepository->find($evenement->getIde());
-        
-        if (!$existingEvenement) {
-            // Si l'événement n'est pas trouvé, déclencher une exception NotFoundHttpException
-            throw new NotFoundHttpException("L'événement avec l'identifiant spécifié n'a pas été trouvé.");
-        }
+        // Récupérer les commentaires associés à l'événement en utilisant le CommentaireRepository
+        $commentaires = $commentaireRepository->findBy(['evenementRelation' => $evenement]);
+       
     
         return $this->render('evenement_Super_admin/show.html.twig', [
             'evenement' => $evenement,
+            'commentaires' => $commentaires,
         ]);
     }
     
@@ -347,17 +405,17 @@ public function new(Request $request, EntityManagerInterface $entityManager, $id
 
 //******************************* Partie User ************************************************//
 
-#[Route('/user/events', name: 'app_user_events')]
-public function eventsuser (EvenementRepository $evenementRepository): Response
-{
+  #[Route('/user/events', name: 'app_user_events')]
+  public function eventsuser (EvenementRepository $evenementRepository): Response
+  {
     return $this->render('evenement_user/evenement.html.twig', [
         'evenements' => $evenementRepository->findAll(),
     ]);
-}
+ }
     
-#[Route('/user/events/{ide}', name: 'app_user_show', methods: ['GET'])]
-public function showuser(Evenement $evenement, EvenementRepository $evenementRepository, CommentaireRepository $commentaireRepository): Response
-{
+ #[Route('/user/events/{ide}', name: 'app_user_show', methods: ['GET'])]
+ public function showuser(Evenement $evenement, EvenementRepository $evenementRepository, CommentaireRepository $commentaireRepository): Response
+ {
     // Récupérer les commentaires associés à l'événement en utilisant le CommentaireRepository
     $commentaires = $commentaireRepository->findBy(['evenementRelation' => $evenement]);
     
@@ -365,5 +423,5 @@ public function showuser(Evenement $evenement, EvenementRepository $evenementRep
         'evenement' => $evenement,
         'commentaires' => $commentaires, // Passer les commentaires au modèle Twig
     ]);
-}
-}
+ } 
+ }

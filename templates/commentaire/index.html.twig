@@ -6,48 +6,71 @@
     <h1>Commentaires</h1>
 
     <table class="table">
-        {% for commentaire in commentaires %}
+    {% for commentaire in commentaires %}
+        <thead>
             <tr>
-                <td>
-                    <div style="border-radius: 10px; border: 1px solid #ccc; padding: 10px;">
-                        {{ commentaire.contenu }}
-                    </div>
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton{{ commentaire.idc }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Options <!-- Ajoutez un libellé à l'intérieur du bouton -->
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ commentaire.idc }}">
-                            <a class="dropdown-item" href="{{ path('app_commentaire_edit', {'idc': commentaire.idc, 'ide': commentaire.evenementRelation.ide}) }}">Éditer</a>
-                            <a class="dropdown-item" href="#" onclick="document.getElementById('delete-form-{{ commentaire.idc }}').submit()">Supprimer</a>
-                        </div>
-                    </div>
-                    <form id="delete-form-{{ commentaire.idc }}" action="{{ path('app_commentaire_delete', {'idc': commentaire.idc, 'ide': commentaire.evenementRelation.ide}) }}" method="post" style="display: none;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.idc) }}">
-                    </form>
-                </td>
+                
+                <th>{{ commentaire.usertRelation.nom }}  {{commentaire.usertRelation.prenom}} {{ commentaire.datecreation ? commentaire.datecreation|date('Y-m-d H:i:s') : '' }}</th>
+             <p class="card-text"></p>
+
             </tr>
-        {% endfor %}
-    </table>
-    {% if commentaires is empty %}
-        <p>Voulez-vous ajouter un nouveau commentaire ?</p>
+        </thead>
+       <tbody>
+    {% if commentaire %}
+        <tr>
+            <td>
+                <div style="border-radius: 10px; border: 1px solid #ccc; padding: 10px;">
+                    {{ commentaire.contenu }}
+                </div>
+            </td>
+            <td>
+  <div>
+    <li>
+        <a href="#" onclick="toggleSubMenu('lieuSubMenu')">  <span>PLUS ▼</span></a>
+        <ul id="lieuSubMenu" class="sub-menu" style="display: none;"> <!-- Nested unordered list for sub-items with initial display set to none -->
+            <li>    
+                {{ include('commentaire/_delete_form.html.twig') }}
+            </li>
+            <li>     
+                <a href="{{ path('app_commentaire_edit', {'idc': commentaire.idc, 'ide': commentaire.evenementRelation.ide}) }}">Éditer</a>
+            </li>
+        </ul>
+    </li>
+</div>
+
+<script>
+    function toggleSubMenu(subMenuId) {
+        var subMenu = document.getElementById(subMenuId);
+        subMenu.style.display = subMenu.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+
+<style>
+    .sub-menu-indicator {
+        margin-left: 5px; /* Ajustez la marge selon vos besoins */
+        font-size: 10px; /* Ajustez la taille de police selon vos besoins */
+    }
+    .sub-menu {
+        background-color: #f2f2f2; /* Couleur de fond gris clair */
+        padding: 5px; /* Ajoute un léger remplissage pour plus de lisibilité */
+        border-radius: 5px; /* Ajoute des coins arrondis au menu */
+    }
+    .sub-menu li {
+        list-style: none; /* Supprime les puces de la liste */
+    }
+</style>
+
+
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">Voulez-vous ajouter un nouveau commentaire ?</td>
+        </tr>
     {% endif %}
-    
- <!-- Scroll Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+</tbody>
 
-    <!-- Preloader -->
-    <div id="preloader"></div>
+    {% endfor %}
+    </table>
 
-    <!-- Vendor JS Files -->
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-    <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
-    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
-    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-
-    <!-- Main JS File -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
 {% endblock %}
